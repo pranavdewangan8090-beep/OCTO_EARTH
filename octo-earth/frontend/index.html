@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OCTO-EARTH</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header>
+  <b>OCTO-EARTH</b>
+  <span class="dim sub">moving Earth from 1 AU to a wider orbit by throwing asteroid mass · RL prototype</span>
+  <span id="conn" class="pill off">connecting…</span>
+  <span id="feasPill" class="pill" title="Analytic feasibility gate: can the target be reached at all with these parameters?">feasibility …</span>
+  <span id="checksPill" class="pill" title="Automatic physics self-tests (conservation laws, Kepler motion, Mars gravity, …). See Guide → Physics checks.">physics checks …</span>
+  <span id="climatePill" class="pill" title="Climate model: Earth's global-mean surface temperature and the light added by the space mirrors (× today's sunlight). Green = within the target tolerance. The agent decides how much mirror light goes to Earth. Details: ▦ Ledger.">climate –</span>
+  <span id="marsPill" class="pill" title="Planetary safety: Earth must stay farther from Mars than the safe distance (Mars's tide on Earth and its pull on the Moon stay below the limits). See Guide.">Mars safety …</span>
+  <a id="lnkFailed" class="pill" href="failed.html" target="_blank" rel="noopener" title="Four other ideas for moving Earth - laser push, hydrogen harvesting, superconducting magnetic arms, a Dyson beam on a held reflector - each in its own 3-D view, with the numbers that show why it fails. Independent of this asteroid-launcher model.">Failed attempts (4 models)</a>
+  <button id="btnHelp" class="round" title="Quick start (keyboard: ?)">?</button>
+</header>
+
+<nav id="rail" aria-label="panels">
+  <button data-drawer="dMission" title="Mission: train the agent, compare policies, choose what to watch"><b>▶</b><span>Mission</span></button>
+  <button data-drawer="dView" title="View: overview or Earth POV, camera, visible layers"><b>◉</b><span>View</span></button>
+  <button data-drawer="dParams" title="Parameters (with explanations), presets, reset to defaults"><b>▣</b><span>Params</span></button>
+  <button data-drawer="dResults" title="Training curves, comparison with baselines, best model"><b>▤</b><span>Results</span></button>
+  <button data-drawer="dLedger" title="Climate (space mirrors), energy ledger (every joule from sunlight to its final form), collector-belt orbit keeping, enablers and major problems"><b>▦</b><span>Ledger</span></button>
+  <button data-drawer="dGuide" title="Explanations of every parameter, output, check, assumption; glossary"><b>?</b><span>Guide</span></button>
+  <button data-drawer="dLog" title="Program log (Python)"><b>≡</b><span>Log</span></button>
+</nav>
+
+<aside id="drawer" hidden>
+  <div class="dhead"><b id="drawerTitle"></b><span class="dim small">Esc to close</span><button id="drawerClose" title="Close (Esc)">✕</button></div>
+  <div class="dbody">
+    <section id="dMission" class="dpane" data-title="Mission">
+      <h3>1 · Train the agent <i class="info" title="The agent (PPO neural network) practises complete missions on the fast model. Every few episodes it is tested without exploration; the best tested version is saved as best_model.zip.">ⓘ</i></h3>
+      <div id="trainStatus" class="mono small">—</div>
+    <div class="bar"><div id="trainBar"></div></div>
+    <div class="btns">
+      <button id="btnTrain">Start training</button>
+      <button id="btnStop">Stop</button>
+      <button id="btnCompare" title="Run no-ejection, heuristic and best PPO model on the fast model (3 seeds) and the high-fidelity N-body model (1 seed + stability check).">Compare policies</button>
+    </div>
+    <div class="btns">
+      <label class="small" title="Where the PPO neural network runs. The physics always runs on the CPU. Auto measures CPU and GPU when training starts and uses the faster one - for this small network that is normally the CPU, because the GPU has a fixed cost for every single decision and shares the graphics card with this 3D view.">Training device
+        <select id="trainDevice">
+          <option value="auto">Auto (measures, uses the faster)</option>
+          <option value="cpu">CPU</option>
+          <option value="cuda">GPU (NVIDIA)</option>
+        </select></label>
+    </div>
+    <div id="trainSpeed" class="small dim"></div>
+    <div id="bestBox" class="small">best model: N/A</div>
+
+    
+      <h3>2 · Choose what to watch <i class="info" title="Python runs the physics; the browser only draws the recorded states. Earth is never moved by the browser on its own. Press ▶ in the bar at the bottom.">ⓘ</i></h3>
+      <div class="seg" id="showSeg" title="What the screen shows. Training keeps running in the background whatever you choose.">
+        <button data-show="live" title="Watch the agent learn: each newly finished training episode is replayed as soon as it is done (fast model, with exploration noise).">Live training</button>
+        <button data-show="ppo" title="The best PPO model saved so far (best_model.zip), playing a full mission.">Best PPO model</button>
+        <button data-show="heuristic" title="The hand-designed rule, playing a full mission.">Best hand-coded</button>
+        <button data-show="none" title="No ejection: Earth stays on its orbit (reference).">No ejection</button>
+      </div>
+      <label class="small"><input type="checkbox" id="trainLive" checked> show the training live on screen
+        <i class="info" title="Off: training runs in the background without sending episodes to the screen, so you can watch the best PPO model, the heuristic or the no-ejection reference while it learns. On: the newest finished training episode is shown.">ⓘ</i></label>
+      <div class="btns"><label class="small" title="How fast a training episode is replayed on screen. Keep up: every episode (up to 10,000 simulated years) is replayed in about 6 seconds, so you see the agent change from one episode to the next. Slow detail: the episode is replayed at the speed of the slider in the bottom bar (at a few years per second one episode takes many minutes - training itself is NOT slowed down, it keeps running in the background).">Live replay pace
+        <select id="trainPace">
+          <option value="keep">keep up with training (~6 s per episode)</option>
+          <option value="slider">slow detail (speed slider)</option>
+        </select></label></div>
+      <div class="small dim">Or choose a mission and model in detail:</div>
+      <div class="btns">
+      <select id="playPolicy" title="Which decision rule controls the ejections.">
+        <option value="ppo">Best PPO model</option>
+        <option value="heuristic">Hand-designed heuristic</option>
+        <option value="none">No ejection (reference)</option>
+      </select>
+      <select id="playFid" title="Fast model (what the agent trained on): exact two-body orbits of the Earth-Moon centre around the Sun and of the Moon around Earth(+asteroid); the Sun's tidal pull on the Moon is neglected. High-fidelity: full N-body Sun, Earth(+asteroid), Moon and fragments, all pulling on each other.">
+        <option value="hifi">high-fidelity N-body</option>
+        <option value="fast">fast model</option>
+      </select>
+    </div>
+    
+      <div class="btns"><button id="btnWatch" class="primary" title="Start the selected mission now.">▶ Watch this mission</button></div>
+      <div class="small dim">Play / pause / reset and the speed are in the bar at the bottom of the screen.</div>
+    </section>
+
+    <section id="dView" class="dpane" data-title="View">
+      <div class="btns">
+        <label class="small" title="Solar system overview: whole orbits, not to scale. Earth POV: true-scale close-up around Earth with selectable layers (magnetic field, solar wind, gravity well, Mars direction, ...). Power beams: the camera rides on one arm tip and you watch the microwave beams from the solar collectors arrive and get absorbed (key B). Solar collector close-up: one collector satellite of the belt, its solar wings facing the Sun and its microwave transmitter beaming to Earth (key C). Weather & life: Earth with clouds, winds and its living zones, kept warm by the ring of space mirrors; toggle to see the frozen Earth without them (key W).">View
+          <select id="viewMode">
+            <option value="overview">Solar system overview</option>
+            <option value="pov">Earth POV close-up (true scale)</option>
+            <option value="beam">Power beams (ride on an arm)</option>
+            <option value="collector">Solar collector close-up</option>
+            <option value="weather">Weather &amp; life (space mirrors)</option>
+          </select></label>
+      </div>
+      <div id="ovBox">
+        <label class="small" title="Move the camera with Earth (zoomed in) to see single packets, the asteroid and the recoil arrow. Drag to rotate, scroll to zoom."><input type="checkbox" id="follow" /> camera follows Earth (close-up)</label>
+        <div class="btns small"><button id="ovZoomSystem" title="Zoom out to see the whole modelled solar system: Sun, Mercury, Venus, Earth, Mars, Jupiter (5.2 AU).">whole system (to Jupiter)</button></div>
+        <div class="btns small"><button id="ovZoomEarth" title="Fly close to Earth (and follow it) to see the launcher ring, the 8 arms throwing, the docked asteroid and the space mirrors.">zoom to Earth (see the arms)</button></div>
+        <div class="small layhead"><b>Overview layers</b></div>
+        <div class="layers small">
+          <label title="Mercury, Venus and Jupiter (update p35): drawn from their simulated positions; their gravity acts on Earth, the Moon, Mars and the fragments, and Earth pulls them back. Planets beyond Jupiter are not modelled. Markers are enlarged, not to scale."><input type="checkbox" id="ovPlanets" checked /> Mercury, Venus, Jupiter</label>
+          <label title="The current orbits of Mercury, Venus and Jupiter (osculating ellipses from their recorded positions and velocities)."><input type="checkbox" id="ovPlanetOrbits" checked /> their orbits</label>
+          <label title="Mars's orbit at the start (faint) and now (dashed). Earth's pull changes Mars's orbit; the difference shows how much."><input type="checkbox" id="ovMarsOrbit" checked /> Mars orbits (start / now)</label>
+          <label title="When Earth is within 0.3 AU of Mars: the Earth-Mars line and the safe (red) and caution (yellow) distances around Mars, drawn at TRUE scale."><input type="checkbox" id="ovMarsSafe" checked /> Mars safety rings</label>
+          <label title="Dashed: the orbit Earth would follow if all thrust stopped now."><input type="checkbox" id="ovCoast" checked /> Earth coasting orbit</label>
+          <label title="Dim dots: states the physics has already computed but the display has not reached yet."><input type="checkbox" id="ovAhead" checked /> computed-ahead dots</label>
+          <label title="Text labels next to the bodies."><input type="checkbox" id="ovLabels" checked /> labels</label>
+          <label title="Packet paths (two-body solar gravity)."><input type="checkbox" id="ovPackets" checked /> packet paths</label>
+          <label title="The solar collector belt around the Sun (gold dots). Each dot stands for thousands of collectors."><input type="checkbox" id="ovCollectors" checked /> solar collector belt</label>
+          <label title="Microwave power beams from the belt to Earth's arms (one line per arm, schematic). Bright while the launcher draws power."><input type="checkbox" id="ovBeams" checked /> power beams</label>
+          <label title="12 collectors SIMULATED along the mission: solid silver = with station keeping (stay on their slots), faint see-through ghosts = the same collectors without station keeping (they drift along their orbits). Thin cyan circles = their assigned orbits."><input type="checkbox" id="ovTracked" checked /> simulated collectors (orbit keeping)</label>
+          <label title="The ring of thin space mirrors around Earth (enabler E3) that reflects extra sunlight onto Earth. Drawn at 4.5 Earth-marker radii (real: 20 Earth radii). Thin light lines show sunlight arriving on each mirror and its reflection down to Earth; the share of mirrors aimed at Earth follows the mirror light recorded by the climate model."><input type="checkbox" id="ovMirrors" checked /> space mirrors</label>
+          <label title="Earth's launcher ring and its 8 arms, drawn to the same enlarged scale as the Earth marker. While packets are launched they throw one packet together along the recorded launch direction."><input type="checkbox" id="ovArms" checked /> ring + 8 arms</label>
+        </div>
+      </div>
+      <div id="wxBox" class="povbox" hidden>
+        <div class="small dim">Earth with weather and life, kept warm by the space mirrors (enabler E3). Temperatures, light, mirror aim, ice line and growing zone come from the climate model; continents, clouds, winds and storms are an illustration. Drag to rotate, scroll to zoom. The panel on the right switches to the Earth WITHOUT mirrors.</div>
+        <div class="btns small"><button id="wxReset" title="Back to the default camera position.">reset camera</button></div>
+        <label class="small" title="Names of the weather belts, the ice line, the growing zone and the mirror ring."><input type="checkbox" id="wxLabels" checked /> labels</label>
+      </div>
+      <div id="colBox" class="povbox" hidden>
+        <div class="small dim">One of the belt's collectors, drawn as a satellite (illustration, not to scale). Drag to rotate, scroll to zoom.</div>
+        <div class="btns small"><button id="colReset" title="Back to the default camera position.">reset camera</button></div>
+        <label class="small" title="Names of the satellite's parts and of the Sun / Earth directions."><input type="checkbox" id="colLabels" checked /> labels</label>
+      </div>
+      <div id="povBox" class="povbox" hidden>
+      <div class="btns small">Look:
+        <button data-look="oblique" title="Default: day and night side, ring and arms.">default</button>
+        <button data-look="sun" title="From behind Earth toward the Sun.">toward Sun</button>
+        <button data-look="side" title="From the side: the solar wind flows across the screen; best for the magnetosphere.">side</button>
+        <button data-look="motion" title="Looking along Earth's orbital motion.">along motion</button>
+        <button data-look="moon" title="Look from behind Earth toward the Moon.">at Moon</button>
+        <button data-look="top" title="From ecliptic north, onto the orbit plane.">from north</button>
+      </div>
+      <label class="small" title="Earth's orbital motion turns the Sun direction once per orbit. When checked, the camera turns with it so the Sun stays at the same place on screen."><input type="checkbox" id="povLock" checked /> keep the Sun direction fixed on screen</label>
+      <div class="small layhead"><b>Layers</b> <span class="dim">(tick only what you need)</span>
+        <button id="povNone" title="Hide every layer.">None</button> <button id="povDef" title="Restore the default layers and zoom.">Defaults</button></div>
+      <div id="povLayers" class="layers small"></div>
+    </div>
+    
+      <div class="small layhead"><b>Screen</b></div>
+      <div class="layers small">
+        <label><input type="checkbox" id="showLegend" /> legend</label>
+        <label><input type="checkbox" id="showEvents" checked /> event log</label>
+        <label><input type="checkbox" id="showNotes" checked /> notes on approximations</label>
+        <label title="The power-chain panel (Sun → collectors → microwaves → arms → launcher) shown in the Power beams view."><input type="checkbox" id="showPower" checked /> power panel (beam view)</label>
+        <label><input type="checkbox" id="showHud" checked /> telemetry panel</label>
+      </div>
+      <div class="small dim">Keys: Space = play/pause · R = reset · V = switch view · B = power beams · C = collector close-up · W = weather &amp; life · L = legend · Esc = close panel · ? = quick start</div>
+    </section>
+
+    <section id="dLedger" class="dpane wide" data-title="Climate · energy ledger · collector belt">
+      <div id="ledgerBody" class="small"></div>
+    </section>
+
+    <section id="dParams" class="dpane" data-title="Parameters">
+      <div class="btns">
+      <select id="preset" title="hypothetical: huge asteroid and energy, shows the mechanics. realistic: present-day-scale numbers, honestly infeasible."></select>
+      <button id="btnApply">Apply</button>
+      <button id="btnDefaults" title="Reset every parameter to the default of the current preset.">Reset to defaults</button>
+    </div>
+    <div id="paramMsg" class="small"></div>
+    <div id="params"></div>
+    <div class="small dim">Apply is refused while training runs. Saved models are not changed by new parameters — retrain afterwards.</div>
+  
+    </section>
+
+    <section id="dResults" class="dpane wide" data-title="Results">
+      <div class="tabs">
+        <button class="tab active" data-tab="tTrain">Training</button>
+        <button class="tab" data-tab="tResults">Comparison &amp; best model</button>
+      </div>
+      <div id="tTrain" class="tabpane active">
+      <div class="note">Reward is only the score used to train the agent. Physical results (orbit size, resources) are plotted separately.</div>
+      <canvas id="chReward" class="chart" title="Episode return = sum of rewards in one training episode (exploring, so noisy). Yellow = deterministic tests."></canvas>
+      <canvas id="chA" class="chart" title="Final semi-major axis a reached in each training episode. Green line = target."></canvas>
+      <canvas id="chRes" class="chart" title="Fraction of asteroid mass and of energy budget used, and the success rate over the last 50 episodes."></canvas>
+      <h4>Outcomes of training episodes <i class="info" title="Why training episodes ended. Training uses random exploration, so many episodes fail even when the deterministic policy succeeds.">ⓘ</i></h4>
+      <div id="outcomes" class="small"></div>
+      <h4>PPO internals <i class="info" title="Diagnostics of the neural-network update; useful to experts only.">ⓘ</i></h4>
+      <div id="losses" class="mono small dim"></div>
+    </div>
+
+    
+      <div id="tResults" class="tabpane">
+      <div id="verdict" class="verdict">No comparison yet.</div>
+      <div id="cmpTable"></div>
+      <canvas id="chTraj" class="chart tall"></canvas>
+      <div id="bestPanel"></div>
+    </div>
+
+    
+    </section>
+
+    <section id="dGuide" class="dpane wide" data-title="Guide">
+      <input id="guideSearch" placeholder="search the guide (e.g. eccentricity, Mars, tide, reward, Δv)…" />
+      <div id="guide"></div>
+    </section>
+
+    <section id="dLog" class="dpane wide" data-title="Log">
+      <pre id="log" class="mono small"></pre>
+    </section>
+  </div>
+</aside>
+
+<main id="center">
+  <canvas id="scene"></canvas>
+  <div id="hudWrap" class="mono">
+    <div id="hudHead"><button id="hudMore" title="Show all telemetry">more ▾</button><button id="hudHide" title="Hide the telemetry panel (View → Screen to show again)">–</button></div>
+    <div id="hud"></div>
+  </div>
+  <div id="notes" class="small collapsed"><div id="notesHead" title="Click to expand / collapse"><span id="notesCount"></span></div><div id="notesBody"></div></div>
+  <div id="dvLabel" class="mono small"></div>
+  <div id="power" class="small" hidden><div id="powerHead" title="Click to expand / collapse">Power chain <span class="dim">· click to fold</span></div><div id="powerBody"></div></div>
+  <div id="events" class="mono small collapsed"><div class="evh" id="evHead" title="Click to expand / collapse">Event log <span class="dim">(simulated time) · click to expand</span></div><div id="evList"></div></div>
+  <div id="legend" class="small" hidden>
+      <span style="color:#ffcc33">● Sun</span>
+      <span style="color:#4fa3ff">● Earth</span>
+      <span style="color:#dddddd" title="Simulated in both models. Drawn 100x farther from Earth than real. The thin grey ellipse is its current simulated orbit around Earth.">● Moon (distance ×100; grey ellipse = its orbit)</span>
+      <span style="color:#e0a46a" title="Docked to Earth: its mass adds to Earth's gravity. Drawn on the launch ring's axis (north of Earth's marker), the same distance from all 8 arms; it shrinks as its mass is thrown away.">● asteroid, docked on Earth (size ∝ mass<sup>1/3</sup>)</span>
+      <span style="color:#ff9a4d">— packets leaving the Solar System</span>
+      <span style="color:#ffe14d">— packets bound to the Sun</span>
+      <span style="color:#ff5a5a">✕ fell back</span>
+      <span style="color:#7cc4ff">— past path (dark→light = earlier→later)</span>
+      <span style="color:#ffd27a" title="Illustration of the belt: ~900 satellites drawn for 5 million collectors.">collector belt (0.5 AU)</span>
+      <span style="color:#d8d8d8" title="Simulated with station keeping.">simulated collectors (solid, station keeping)</span>
+      <span style="color:#8a8a8a" title="The same collectors simulated without station keeping.">faint ghosts: same, without station keeping</span>
+      <span style="color:#dfe9ff" title="Drawn at 4.5 Earth-marker radii (real 20 Earth radii). Thin light lines: sunlight arriving on each mirror and its reflection down to Earth; very faint short lines = mirrors not needed right now (light turned past Earth).">▫ space mirrors — thin light lines: sunlight in, reflected to Earth</span>
+      <span style="color:#c4ccd8" title="Same enlarged scale as the Earth marker.">launcher ring + 8 arms (throw together)</span>
+      <span style="color:#7cc4ff;opacity:.6">- - coasting orbit</span>
+      <span style="color:#8090a8">· computed ahead</span>
+      <span style="color:#3ddc84">○ target</span>
+      <span style="color:#ff6a4d" title="Simulated in both models: pulls Earth and the Moon and is pulled back, so its orbit changes.">● Mars (marker enlarged)</span>
+      <span style="color:#ff6a4d;opacity:.6">- - Mars orbit now · faint = at start</span>
+      <span style="color:#ff4d4d" title="True scale. Earth must stay outside (planetary-safety limit).">○ Mars safe distance</span>
+      <span style="color:#ffcf4d" title="True scale. Inside it the safety shield starts to override the agent.">○ shield caution distance</span>
+      <span style="color:#7fe08a">→ recoil on Earth</span>
+      <span style="color:#ffd27a" title="Schematic: the real collectors would form a band ±17° around Earth's orbital plane at 0.5 AU.">· solar collector belt</span>
+      <span style="color:#b48cff" title="Bright while the launcher draws beam power; schematic lines, one per arm.">— microwave power beams</span>
+    </div>
+  <div id="quick" class="card" hidden>
+    <div class="qh"><b>Quick start</b><button id="quickClose" title="Close">✕</button></div>
+    <ol>
+      <li><b>Watch</b> a mission: press <b>▶</b> in the bottom bar (or Space). The hand-designed heuristic works without training.</li>
+      <li><b>Speed</b>: drag the slider. Slow = single packets and the Moon; fast = the whole spiral.</li>
+      <li><b>Earth POV</b>: press <b>V</b> or the <b>◉ View</b> button for the close-up with selectable layers (magnetic field, plasma, gravity, Mars).</li>
+      <li><b>Power beams</b> (button in the bottom bar or key <b>B</b>): ride on an arm and watch the microwave beams from the solar collectors arrive and be absorbed whenever a packet is launched.</li>
+      <li><b>Weather</b> (key <b>W</b>): Earth with clouds, winds, ice and its living zones, kept warm far from the Sun by a ring of space mirrors – switch the mirrors off to see the frozen Earth.</li>
+      <li><b>Collector</b> (key <b>C</b>): a close-up of one of the 5 million solar collector satellites – solar wings facing the Sun, microwave transmitter beaming to Earth's arms.</li>
+      <li><b>Mars</b> (red) is fully simulated: it pulls Earth and is pulled back. Earth must stay outside the <b>safe distance</b> (red ring) – the safety shield steers around it.</li>
+      <li><b>Train / compare</b> in <b>▶ Mission</b>, results in <b>▤ Results</b>, every explanation in <b>? Guide</b>. Hover anything with ⓘ.</li>
+    </ol>
+    <div class="btns"><button id="quickHeur" class="primary">▶ Watch the heuristic now</button><button id="quickOk">Got it</button></div>
+  </div>
+</main>
+
+<div id="transport">
+  <button id="btnPlay" title="Resume if paused, otherwise start the selected mission (Space). During training: resumes the replay of the training episode.">▶</button>
+  <button id="btnPause" title="Freeze the display (Space). The physics also stops after it is 3 decisions ahead. Also pauses the training replay (training itself continues).">❚❚</button>
+  <button id="btnReset" title="Restart the same mission from year 0 (R). It is re-computed with the same seed, so it is identical. During training: jump to the newest finished training episode.">⟲</button>
+  <span id="tLabel" class="mono" title="Simulated time (not wall-clock time)">—</span>
+  <span class="spd small" title="">speed <i class="info" id="speedInfo" title="">ⓘ</i> <b id="speedLbl"></b>/s
+    <input id="speed" type="range" min="0" max="1000" value="560" /></span>
+  <span id="runLbl" class="small dim"></span>
+  <button id="chipView" class="chip" title="Switch overview / Earth POV (V)">◉ POV</button>
+  <button id="chipBeam" class="chip" title="Power-beam view: ride on an arm tip and watch the microwaves arrive (B)">Beams</button>
+  <button id="chipCol" class="chip" title="Close-up of one solar collector satellite beaming power to Earth (C)">Collector</button>
+  <button id="chipWx" class="chip" title="Weather &amp; life: clouds, winds and living zones kept by the space mirrors (W)">Weather</button>
+  <button id="chipLegend" class="chip" title="Show / hide the legend (L)">Legend</button>
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

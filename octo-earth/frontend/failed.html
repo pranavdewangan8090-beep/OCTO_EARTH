@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OCTO-EARTH - failed attempts (4 independent models)</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="fa">
+<header>
+  <b>OCTO-EARTH</b>
+  <span class="dim sub">failed attempts - 4 independent ideas for moving Earth from 1 AU to 2.7 AU in 10,000 years, and why each one fails</span>
+  <nav id="faTabs" class="fa-tabs">
+    <button data-m="0" title="Model 1 (key 1): laser push by radiation pressure">1 Laser push</button>
+    <button data-m="1" title="Model 2 (key 2): hydrogen harvesting with a magnetic scoop + fusion drive">2 Hydrogen harvesting</button>
+    <button data-m="2" title="Model 3 (key 3): superconducting magnetic arms using the Lorentz force">3 Magnetic arms</button>
+    <button data-m="3" title="Model 4 (key 4): Dyson beam on a reflector held by 8 arms">4 Dyson beam</button>
+  </nav>
+  <a class="pill" id="lnkMain" href="index.html" title="Back to the main OCTO-EARTH model (asteroid launcher + RL). It is independent of these four models.">Main model</a>
+</header>
+<div id="center">
+  <canvas id="scene"></canvas>
+  <div id="faInfo" class="fa-info small">
+    <div class="fa-ihead"><b id="faTitle"></b><button id="faInfoHide" title="Hide / show this box">-</button></div>
+    <div id="faInfoBody">
+      <div class="fa-goal">Goal for every model: Earth from 1 AU to 2.7 AU within 10,000 years. That needs &Delta;v = <b id="faDv"></b> m/s, i.e. an average push of <b id="faF"></b> N along the orbit for 10,000 years.</div>
+      <div class="fa-sec">Idea</div><div id="faIdea"></div>
+      <div class="fa-sec">Why it fails</div><ol id="faFails"></ol>
+      <div class="dim">Each model is separate: own scene, own physics, own controls. None of them uses the asteroid launcher. Hover any number for its formula.</div>
+    </div>
+  </div>
+  <div id="faErr" class="fa-err" hidden></div>
+</div>
+<div id="faBar" class="fa-bar">
+  <button id="faPrev" title="Previous model (left arrow key)">&lt; Prev</button>
+  <button id="faStart" class="primary" title="Run this model from the beginning">Start</button>
+  <button id="faPause" title="Pause / resume (space bar)">Pause</button>
+  <button id="faReset" title="Back to the beginning (key R)">Reset</button>
+  <button id="faNext" title="Next model (right arrow key)">Next &gt;</button>
+  <span id="faWhich" class="mono small"></span>
+  <span class="dim small fa-keys">keys: 1-4 model &middot; arrows prev/next &middot; space pause &middot; R reset &middot; drag to orbit, wheel to zoom</span>
+  <span id="faFps" class="mono small dim"></span>
+</div>
+<script type="module" src="failed.js"></script>
+</body>
+</html>

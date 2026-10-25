@@ -1,0 +1,36 @@
+{
+  "episode": 50,
+  "timesteps": 3823,
+  "eval": {
+    "success_rate": 0.5,
+    "error": 0.047045788568952224,
+    "energy_frac": 0.5793407742658734,
+    "years": 7650.0,
+    "reward": 128.65269895435245,
+    "a_au": 2.6576779874443943,
+    "e": 0.011075243532827269,
+    "score": [
+      0.5,
+      -0.047,
+      -0.5793407742658734
+    ],
+    "episode": 50,
+    "timesteps": 3823
+  },
+  "hyperparameters": {
+    "algorithm": "PPO (Stable-Baselines3)",
+    "net_arch": [
+      64,
+      64
+    ],
+    "n_steps": 1000,
+    "batch_size": 200,
+    "n_epochs": 10,
+    "learning_rate": 0.0003,
+    "gamma": 0.995,
+    "gae_lambda": 0.95,
+    "log_std_init": -0.5,
+    "seed": 1
+  },
+  "selection": "lexicographic: success rate, then lowest terminal orbit error, then lowest energy use (deterministic, seeds 1001-1002)"
+}

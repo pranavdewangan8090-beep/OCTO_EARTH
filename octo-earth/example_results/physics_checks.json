@@ -1,0 +1,128 @@
+[
+ {
+  "name": "1 two-body motion vs Kepler",
+  "passed": true,
+  "detail": "Kepler 1-orbit closure 1.4e-14; N-body vs Kepler after 1 y: 261.0 m",
+  "seconds": 3.56
+ },
+ {
+  "name": "2 gravity of Sun / Earth / Moon / asteroid / fragments",
+  "passed": true,
+  "detail": "Sun->Earth 6.133e-03, Moon->Earth 3.715e-05, Earth(+asteroid)->Moon 3.035e-03, Mars->Earth 5.594e-10 at 1.85 AU (Earth->Mars 5.233e-09, ratio = mass ratio) m/s^2; Jupiter->Earth 2.651e-07 at 4.62 AU, Venus->Earth 1.122e-08, Mercury->Earth 4.914e-10; asteroid mass scales Earth's pull by 1.005023; fragment(1e20 kg @1e6 km)->Earth 6.674e-09 m/s^2",
+  "seconds": 0.0
+ },
+ {
+  "name": "3 equal and opposite forces",
+  "passed": true,
+  "detail": "|sum m a| / sum|m a| = 7.2e-17",
+  "seconds": 0.0
+ },
+ {
+  "name": "4+6 momentum & angular momentum in ejection",
+  "passed": true,
+  "detail": "high-fidelity ejection: |dP|/(M_E v_E) = 1.1e-14 (round-off), |dL|/|L| = 1.3e-16; fast model |dP|/(dm u) = 1.2e-05 (incl. 1 ms of solar gravity)",
+  "seconds": 6.98
+ },
+ {
+  "name": "5 energy accounting of propulsion",
+  "passed": true,
+  "detail": "measured system energy change vs 1/2 mu u^2 - G dm M/R: rel diff 2.6e-08; drawn = KE/eta; budget never exceeded (tiny budget -> packet reduced to 1.11e+17 kg)",
+  "seconds": 0.0
+ },
+ {
+  "name": "7 finite asteroid mass & fragment mass accounting",
+  "passed": true,
+  "detail": "total mass + escaped mass - initial = 0.0e+00 (rel); merges=20, escaped 1.60e+19 kg; reservoir cannot go negative (5e18 kg reservoir -> ejected 5.00e+18 kg)",
+  "seconds": 2.03
+ },
+ {
+  "name": "8 reversed ejection direction",
+  "passed": true,
+  "detail": "prograde da = +0.0225 AU, retrograde da = -0.0217 AU (asymmetry 0.03)",
+  "seconds": 0.08
+ },
+ {
+  "name": "9 fragment fall-back / escape / Earth impact",
+  "passed": true,
+  "detail": "sub-escape packet falls back (no net recoil, energy lost): True; fast packet leaves the system and is ledgered as escaped: True; fragment aimed at Earth merges with momentum conserved: True",
+  "seconds": 0.0
+ },
+ {
+  "name": "11 reproducibility (fixed seed)",
+  "passed": true,
+  "detail": "identical results for seed 7 (a=1.638128 AU)",
+  "seconds": 0.78
+ },
+ {
+  "name": "13 viewer continuity (interpolation of recorded states)",
+  "passed": true,
+  "detail": "ballistic join between rows 1.1e-11 AU without the planets' pull (no hidden jumps); Mars + Mercury + Venus + Jupiter move Earth by up to 1.4e-04 AU in 5 y (smooth, far below the drawing accuracy); viewer Hermite curve vs exact arc max 3.3e-05 AU; recoil |v_post - v_pre| matches recorded value to 5.7e-12; packet path bends 6.4e-05 (relative) from a straight line after 1 day under solar gravity",
+  "seconds": 0.23
+ },
+ {
+  "name": "14 Moon in the fast (training) model",
+  "passed": true,
+  "detail": "1 y without thrust: Earth-Moon distance fast 363,297-405,504 km vs N-body 361,806-399,330 km (max diff 10,422 km); Moon's orbital phase drifts 22 deg/yr (Sun's tide on the Moon not in the fast model); barycentre diff 84 km; Earth wobble from the Moon's pull 4,874 km; recoil changes the Earth-Moon relative velocity by Earth's recoil only (rel. error 6.4e-12); Moon bound: yes",
+  "seconds": 0.01
+ },
+ {
+  "name": "15 Mars gravity (both models, two-way)",
+  "passed": true,
+  "detail": "20 y without thrust: Mars position fast vs N-body 483 km, Earth-Moon centre 2,846 km; Mars placed 0.02 AU ahead of Earth, after 1 y, changes Earth's velocity by 27.6 m/s (gravity on vs off); Earth<->Mars pull equal and opposite (momentum residual 6.6e-10); Mars is kicked 9.47x harder than Earth (= mass ratio), so Mars's orbit changes too",
+  "seconds": 0.02
+ },
+ {
+  "name": "16 planetary-safety limits and Mars shield",
+  "passed": true,
+  "detail": "safe distance 3.67 million km (0.0246 AU, set by: tide on Earth); tide ratio at the tide limit = 1.000000000000 x limit; forecast vs simulated 10-y closest approach 0.3797 vs 0.3730 AU (1.8e-02); shielded heuristic mission (seed 5): closest Mars pass 0.0503 AU, 536 shield overrides, outcome success",
+  "seconds": 0.97
+ },
+ {
+  "name": "17 solar collectors and microwave power beaming",
+  "passed": true,
+  "detail": "power chain 3.828e+26 W x 0.3 x (1 - lanes 5.1e-05) x rated 0.25 x temperature 0.696 (panels 450 K, energy balance 8e-17) x age 0.950 x 0.8 x capture 0.999 x 0.85 = 1.290e+25 W at 1 AU (exact to 0e+00); Goubau tau=1 -> 0.6321 (0e+00); belt covers |latitude| <= 17.5 deg; with a reserve of only 1e28 J the fast / N-body engines launched 1.44e+32 / 1.44e+32 J powered by the beams (bookkeeping residual 1e-16, never more than offered); collectors off -> never more than the reserve: True; 5e+06 collectors of 64,950 km each; Earth's clear sunlight lane 1.8e-05 of the belt; beams supply 2.0x the launcher's peak demand",
+  "seconds": 0.01
+ },
+ {
+  "name": "18 climate + space mirrors + energy ledger",
+  "passed": true,
+  "detail": "equilibrium today 288.00 K, at 2.7 AU without extra light 152 K (frozen); mirrors 1.6e+15 m^2 (8e+12 kg) can send 1.10 x today's sunlight at 2.7 AU; heuristic mission with the space mirrors: success, final 288.4 K (max deviation 2.4 K, 0 y outside +-15 K); without it: deadline, 152 K; ledger: in 1.290e+37 J = reflected 1.29e+36 + collector heat 1.13e+37 + manufacturing 1.5e+31 + transmitter heat 5.36e+34 + spill 5.31e+33 + rectenna heat 3.14e+34 + packet KE 8.89e+34 + launcher heat 8.89e+34; mirrors: sunlight 8.41e+28 = onto Earth 1.07e+28 + past Earth 6.50e+28 + mirror heat 8.41e+27 (residual 4e-16); heat reaching Earth 1.26e+26 J",
+  "seconds": 2.49
+ },
+ {
+  "name": "19 collector belt station keeping",
+  "passed": true,
+  "detail": "12 collectors x 300 y: station keeping ON -> max distance from the assigned slot 640 km (rms 589 km; spacing between collectors 64,950 km), control 96 m/s per year each; OFF -> the orbit's shape changes little (semi-major axis 34,900 km, e 1.7e-02, distance from the Sun swings by up to 1,296,747 km) but the collectors drift along the orbit up to 147,205,091 km = 2,266 slots (collisions); beam recoil 1.2e-04 of the Sun's pull, planets 2.5e-06, neighbour 3e-10, control limit 3.8e-03; belt's net pull on Earth 1e-09 (1 AU) / 1e-09 (target) of the Sun's",
+  "seconds": 5.92
+ },
+ {
+  "name": "20 other planets: Mercury, Venus, Jupiter (both models, two-way)",
+  "passed": true,
+  "detail": "100 y without thrust, fast vs N-body: Mercury 1.7e-04, Venus 1.3e-04, Jupiter 1.7e-05 AU, Earth-Moon centre 1.1e-04 AU; orbit sizes after 1,000 y change by 1.4e-06 (relative); Jupiter pulls Earth 2.65e-07 m/s^2 and Earth pulls Jupiter 8.38e-10 (ratio = mass ratio: True); 1,500-y heuristic mission: final a 2.2340 AU with the planets vs 2.2342 without, e 0.0072 vs 0.0093; closest Venus 0.268 AU, Jupiter 2.747 AU; safe distances (Mars rules): Mercury 0.0197, Venus 0.0483, Jupiter 0.3526 AU",
+  "seconds": 0.92
+ },
+ {
+  "name": "21 launcher geometry: asteroid on the ring axis, 2 R_E arms",
+  "passed": true,
+  "detail": "8 roots on a 1.25 R_E ring, grab point 1.25 R_E up the axis: every root 1.7678 R_E from it (spread 0e+00) <= arm 2.0 R_E; asteroid (r 0.240 R_E at 2000 kg/m^3) centre 1.945 R_E from every root; 1,593 km above the surface; joint-throw stroke 1,983 km (same when the asteroid is used up) -> 1.55e+06 m/s^2 for 2,480 km/s; escape energy from the surface instead of the release point (1.288 R_E): +4.6e-06 (conservative); asteroid merged with Earth: centre-of-mass offset 47 km, tidal error on the Moon 9.4e-06 of Earth's pull",
+  "seconds": 0.03
+ },
+ {
+  "name": "10 integrator convergence",
+  "passed": true,
+  "detail": "Earth position error after 10 y at dt 12/6/3 h: 498639/37700/2360 m (ratios 13.2, 16.0; 4th order -> 16)",
+  "seconds": 0.09
+ },
+ {
+  "name": "10b energy / angular-momentum drift",
+  "passed": true,
+  "detail": "100 y ballistic: |dE/E| = 5.1e-12, |dL|/|L| = 3.9e-14",
+  "seconds": 0.08
+ },
+ {
+  "name": "12 fast model vs high-fidelity N-body",
+  "passed": true,
+  "detail": "heuristic, 1,500 y, shield off: a fast 2.24000 vs high-fidelity 2.23952 AU (rel 2.1e-04), |de| 5.7e-05; with Mars gravity + shield: 2.2340 vs 2.2268 AU (rel 3.3e-03; 16 vs 56 shield overrides)",
+  "seconds": 3.66
+ }
+]

@@ -1,0 +1,31 @@
+OCTO-EARTH - Earth textures for the cinematic views (Hydrogen collection, Dyson beam failure)
+=============================================================================================
+All images are bundled locally (the viewer never loads anything from the internet). They are derived from
+NASA imagery, which is in the public domain (NASA media usage guidelines). Credit: NASA Earth Observatory /
+NASA Visible Earth.
+
+earth_day_4096.jpg
+    Blue Marble: Next Generation, December 2004, topography + bathymetry (5400 x 2700),
+    NASA Earth Observatory, Reto Stockli (NASA GSFC).
+    https://eoimages.gsfc.nasa.gov/images/imagerecords/73000/73909/world.topo.bathy.200412.3x5400x2700.jpg
+    Resized to 4096 x 2048.
+
+earth_night_4096.jpg
+    Black Marble 2016 (Earth at night, Suomi NPP VIIRS), NASA Earth Observatory.
+    https://eoimages.gsfc.nasa.gov/images/imagerecords/144000/144898/BlackMarble_2016_3km.jpg
+    Resized to 4096 x 2048; only the warm city lights are kept (red minus blue), the blue land / ice glow is removed.
+
+earth_clouds_2048.jpg
+    Blue Marble cloud composite (2048 x 1024), NASA Visible Earth.
+    https://eoimages.gsfc.nasa.gov/images/imagerecords/57000/57747/cloud_combined_2048.jpg
+    Used as cloud opacity.
+
+earth_normal_2048.jpg
+    APPROXIMATE relief shading derived from the day image (land brightness -> height -> normals; oceans flat).
+    It is NOT elevation data; it only adds a little surface relief to the lighting.
+
+earth_ocean_mask_2048.png
+    Water mask derived from the day image (blue-dominant pixels); used for the sun glint on water.
+
+Fallback: if any file is missing, earthAssets.js uses the procedural Earth texture of the POV view (pov.js) or a
+neutral texture, and logs a warning in the browser console.

@@ -1,0 +1,61 @@
+{
+ "feasible": true,
+ "verdict": "FEASIBLE within this model (physically hypothetical scale)",
+ "lines": [
+  "Required slow-spiral delta-v 1 -> 2.7 AU: 11,658 m/s (Hohmann two-impulse: 10,997 m/s)",
+  "Orbital energy change of Earth+Moon: 1.697e+33 J; angular momentum change 1.741e+40 kg m^2/s",
+  "Average power just for the orbital energy change over 10,000 y: 5.377e+21 W  (= 3.10e+04 x all sunlight intercepted by Earth)",
+  "Minimum launch energy with this reservoir: 1.664e+35 J -> average power 5.273e+23 W (= 1.38e-03 x total solar luminosity)",
+  "Reaction mass needed at max speed: 1.415e+22 kg (0.193 lunar masses); available 3.000e+22 kg",
+  "Max launch speed = 1.67% of c (non-relativistic model; error grows above ~10% c)",
+  "Solar collectors: 30% of the Sun's output = 1.148e+26 W intercepted at 0.5 AU; electricity delivered to the arms 1.290e+25 W with Earth at 1 AU, 1.114e+25 W at 2.7 AU; launcher peak demand (max packet rate and speed) 6.338e+24 W -> the beams supply 1.76x the peak demand",
+  "[OK ] mass: needs launch speed 2.355e+06 m/s with ALL 3.00e+22 kg; max allowed 5.000e+06 m/s (mass-limited delta-v capacity 2.475e+04 m/s vs required 1.166e+04 m/s)",
+  "[OK ] energy: minimum energy drawn 1.664e+35 J vs available 3.817e+36 J (reserve 3.000e+35 J + collectors 1.114e+25 W x 10,000 y)",
+  "[OK ] rate: at max packet rate and speed the transfer needs >= 1,771 years (mission 10,000 y)",
+  "[OK ] combined: slowest speed meeting mass AND time limits 2.355e+06 m/s -> needs 3.000e+22 kg and 1.664e+35 J"
+ ],
+ "plain": [
+  "To move Earth from 1 AU to 2.7 AU slowly, its orbital speed must be changed by about 11.7 km/s in total (it ends up slower, but on a much bigger orbit).",
+  "Mass: OK - throwing the whole asteroid at 2,355 km/s gives enough push.",
+  "Energy: OK - the cheapest way needs 1.66e+35 J; the solar collectors deliver 1.11e+25 W (1.8x the launcher's peak demand), i.e. up to 3.82e+36 J over the mission, plus a reserve of 3.00e+35 J.",
+  "Time: OK - at full thrust the transfer takes at least 1,771 years; the mission allows 10,000.",
+  "All limits together: OK.",
+  "This is an analytic estimate for a slow spiral; the simulation then shows what actually happens."
+ ],
+ "dv_required": 11658.32343872029,
+ "dv_hohmann": 10997.244287699104,
+ "dE_orbit": 1.6968069842727567e+33,
+ "dL_orbit": 1.7411430491854902e+40,
+ "dv_capacity_mass": 24749.90528717447,
+ "u_required": 2355246.6430628467,
+ "energy_min_draw": 1.6641560248976425e+35,
+ "mass_needed_at_umax": 1.4149856315759055e+22,
+ "years_min": 1770.79489101245,
+ "u_combined": 2355246.6430628467,
+ "energy_combined": 1.66415602489764e+35,
+ "mass_combined": 2.999999999999995e+22,
+ "avg_power_min": 5.2733922253201846e+23,
+ "checks": {
+  "mass": {
+   "ok": true,
+   "detail": "needs launch speed 2.355e+06 m/s with ALL 3.00e+22 kg; max allowed 5.000e+06 m/s (mass-limited delta-v capacity 2.475e+04 m/s vs required 1.166e+04 m/s)"
+  },
+  "energy": {
+   "ok": true,
+   "detail": "minimum energy drawn 1.664e+35 J vs available 3.817e+36 J (reserve 3.000e+35 J + collectors 1.114e+25 W x 10,000 y)"
+  },
+  "rate": {
+   "ok": true,
+   "detail": "at max packet rate and speed the transfer needs >= 1,771 years (mission 10,000 y)"
+  },
+  "combined": {
+   "ok": true,
+   "detail": "slowest speed meeting mass AND time limits 2.355e+06 m/s -> needs 3.000e+22 kg and 1.664e+35 J"
+  }
+ },
+ "vesc": 11214.196159819428,
+ "vinf_max": 4999987.424164633,
+ "energy_available": 3.816862888250906e+36,
+ "solar_power_min": 1.114426600327942e+25,
+ "launcher_peak_power": 6.337617562805791e+24
+}
