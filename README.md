@@ -9,6 +9,9 @@ pip install -r requirements.txt
 python octoearth_rl.py
 ```
 
+##Demo Simulation:
+https://drive.google.com/file/d/1nDeFmHMzqYLWCHHH2DhLang99N0Wt2jm/view?usp=sharing
+
 The viewer opens at `http://127.0.0.1:8800/` (or the next free port). Training starts automatically; press Ctrl+C to stop (the model is still saved).
 
 ## The left-hand tabs
